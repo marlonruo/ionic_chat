@@ -1,8 +1,7 @@
 import { Component } from '@angular/core';
-import { NavController } from 'ionic-angular';
+import { NavController, App } from 'ionic-angular';
 import {Platform} from 'ionic-angular';
 
-declare var applozic:any;
 
 @Component({
   selector: 'page-home',
@@ -10,20 +9,24 @@ declare var applozic:any;
 })
 export class HomePage {
 
-  constructor(public navCtrl: NavController, platform: Platform) {
-  	platform.ready().then(() => {
-  		alert("platform ready");
-  		 var alUser = {
-            'userId' : 'debug2',   //Replace it with the userId of the logged in user
-            'password' : 'debug2',  //Put password here
-            'authenticationTypeId' : 1,
-            'applicationId' : 'applozic-sample-app' //replace "applozic-sample-app" with Application Key from Applozic 
-        };
-       alert("login to chat");
-	   applozic.login(alUser, function() {
-	        		applozic.launchChat(function() {}, function() {});
-	        	}, function() {});
+  constructor(public navCtrl: NavController, public app: App, platform: Platform) {
+    platform.ready().then(() => {
+       applozic.isLoggedIn(function(response) {
+          //alert(response);
+          if (response == "true") {
+            applozic.launchChat(function() {}, function() {});
+          }
+        }, function() {});
     });
+
+  }
+
+  logout(){
+    //Api Token Logout
+    const root = this.app.getRootNav();
+    root.popToRoot();
   }
 
 }
+
+declare var applozic: any;
